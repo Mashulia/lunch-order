@@ -7,7 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+client/node_modules
+server/node_modules
+server/.env
 dist
 dist-ssr
 *.local
@@ -22,3 +24,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+client/cypress/videos/
+client/cypress/screenshots/
+
+
+node_modules
