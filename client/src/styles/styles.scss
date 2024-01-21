@@ -1,0 +1,14 @@
+// Write your overrides
+.c-pointer {
+	cursor: pointer;
+}
+
+.tab--active {
+	color: #9155fd;
+}
+
+.p-absolute {
+	position: absolute !important;
+	top: 10px;
+	z-index: 2;
+}

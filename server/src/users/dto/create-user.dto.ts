@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  Length,
-  IsEmail,
-  IsPhoneNumber,
-  IsMobilePhone,
-} from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -13,7 +7,6 @@ export class CreateUserDto {
     description: 'Почтовый адрес',
   })
   @IsString({ message: 'Должно быть строкой' })
-  @IsEmail({}, { message: 'Некорректный email' })
   email: string;
 
   @ApiProperty({
@@ -28,11 +21,7 @@ export class CreateUserDto {
     example: '+79514357821',
     description: 'Телефон',
   })
-  //   @IsPhoneNumber('RU', {
-  //     message: 'Invalid phone number. Valid phone number sample +79514357821',
-  //   })
-  @IsMobilePhone()
-  phone: number;
+  phone: string;
 
   @ApiProperty({
     example: 'Мария',

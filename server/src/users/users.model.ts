@@ -5,13 +5,14 @@ import {
   Table,
   Model,
   BelongsToMany,
+  HasMany,
 } from 'sequelize-typescript';
+import { EmployeeOrder } from 'src/orders/models/order.model';
 import { Role } from 'src/roles/roles.model';
 import { UserRoles } from 'src/roles/user-roles.model';
 
 interface UserCreationAttrs {
   email: string;
-  phone: number;
   password: string;
   firstName: string;
   lastName: string;
@@ -20,6 +21,9 @@ interface UserCreationAttrs {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, UserCreationAttrs> {
+  static remove(user: User) {
+    throw new Error('Method not implemented.');
+  }
   @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
   @Column({
     type: DataType.INTEGER,
@@ -35,10 +39,20 @@ export class User extends Model<User, UserCreationAttrs> {
   })
   @Column({
     type: DataType.STRING,
-    unique: true,
     allowNull: false,
   })
   email: string;
+
+  @ApiProperty({
+    example:
+      'file:///Users/mariarudneva/Desktop/Снимок%20экрана%202024-01-06%20в%2021.31.09.png',
+    description: 'Фото профиля',
+  })
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  avatarPhotoUrl: string;
 
   @ApiProperty({
     example: '1234',
@@ -51,25 +65,13 @@ export class User extends Model<User, UserCreationAttrs> {
   password: string;
 
   @ApiProperty({
-    example: '+79514357821',
+    example: '+7951435782',
     description: 'Телефон',
   })
   @Column({
-    type: DataType.DECIMAL,
-    unique: true,
-    allowNull: false,
+    type: DataType.STRING,
   })
   phone: string;
-
-  @ApiProperty({
-    example: 'Мария',
-    description: 'Имя',
-  })
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  firstName: string;
 
   @ApiProperty({
     example: 'Руднева',
@@ -82,8 +84,18 @@ export class User extends Model<User, UserCreationAttrs> {
   lastName: string;
 
   @ApiProperty({
-    example: 'Отчество',
-    description: 'Сергеевна',
+    example: 'Мария',
+    description: 'Имя',
+  })
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  firstName: string;
+
+  @ApiProperty({
+    example: 'Сергеевна',
+    description: 'Отчество',
   })
   @Column({
     type: DataType.STRING,
@@ -93,24 +105,27 @@ export class User extends Model<User, UserCreationAttrs> {
 
   @ApiProperty({
     example: 'false',
-    description: 'Вегетерианец или нет',
+    description: 'Показывать только вегетерианские блюда',
   })
   @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
   })
-  isVegeterian: boolean;
+  isShowOnlyVegetarian: boolean;
 
   @ApiProperty({
     example: 'true',
-    description: 'Получать ли рассылки',
+    description: 'Получать рассылки',
   })
   @Column({
     type: DataType.BOOLEAN,
     defaultValue: true,
   })
-  isMailing: boolean;
+  isReceiveEmails: boolean;
 
   @BelongsToMany(() => Role, () => UserRoles)
   roles: Role[];
+
+  @HasMany(() => EmployeeOrder)
+  orders: EmployeeOrder[];
 }

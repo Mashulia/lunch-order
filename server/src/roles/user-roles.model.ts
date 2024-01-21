@@ -1,5 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { BelongsToMany } from 'sequelize';
 import {
   Column,
   DataType,

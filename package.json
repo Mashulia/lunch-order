@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@vuelidate/validators": "^2.0.4",
+    "axios": "^1.6.5",
+    "vuelidate": "^0.7.7"
+  },
+  "devDependencies": {
+    "@types/vue": "^2.0.0",
+    "@vuelidate/core": "^2.0.3"
+  }
+}

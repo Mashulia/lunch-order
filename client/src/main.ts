@@ -1,26 +1,24 @@
-import './assets/main.css'
+/* eslint-disable import/order */
+import "@/@iconify/icons-bundle";
+import App from "@/App.vue";
+import vuetify from "@/plugins/vuetify";
+import { loadFonts } from "@/plugins/webfontloader";
+import router from "@/router";
+import "@core/scss/template/index.scss";
+import "@layouts/styles/index.scss";
+import "@styles/styles.scss";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+loadFonts();
 
-// Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+// Create vue app
+const app = createApp(App);
 
-const vuetify = createVuetify({
-  components,
-  directives,
-})
+// Use plugins
+app.use(vuetify);
+app.use(createPinia());
+app.use(router);
 
-import App from './App.vue'
-import router from './router'
-
-const app = createApp(App)
-
-app.use(createPinia())
-app.use(router)
-app.use(vuetify)
-
-app.mount('#app')
+// Mount vue app
+app.mount("#app");

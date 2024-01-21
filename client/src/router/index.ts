@@ -1,23 +1,66 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/", redirect: "/menu-order" },
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      component: () => import("../layouts/default.vue"),
+      children: [
+        {
+          path: "menu-order",
+          component: () => import("../pages/menu-order.vue"),
+        },
+        {
+          path: "cart",
+          component: () => import("../pages/cart.vue"),
+        },
+        {
+          path: "load-menu",
+          component: () => import("../pages/load-menu.vue"),
+        },
+        {
+          path: "summary",
+          component: () => import("../pages/summary.vue"),
+        },
+        {
+          path: "create-newsletter",
+          component: () => import("../pages/create-newsletter.vue"),
+        },
+        {
+          path: "send-menu",
+          component: () => import("../pages/send-menu.vue"),
+        },
+        {
+          path: "employees",
+          component: () => import("../pages/employees.vue"),
+        },
+        {
+          path: "profile",
+          component: () => import("../pages/profile.vue"),
+        },
+      ],
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
-})
+      path: "/",
+      component: () => import("../layouts/blank.vue"),
+      children: [
+        {
+          path: "login",
+          component: () => import("../pages/login/login.vue"),
+        },
+        {
+          path: "register",
+          component: () => import("../pages/register/register.vue"),
+        },
+        {
+          path: "/:pathMatch(.*)*",
+          component: () => import("../pages/[...all].vue"),
+        },
+      ],
+    },
+  ],
+});
 
-export default router
+export default router;
