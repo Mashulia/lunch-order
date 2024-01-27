@@ -45,4 +45,19 @@ export class CreateDishDto {
 
   @IsNumber()
   menuItemId: number;
+
+  @IsArray()
+  ingredients: CreateIngredientDto[];
+}
+
+export class CreateIngredientDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  comments?: string;
+
+  @IsString()
+  composition: string;
 }

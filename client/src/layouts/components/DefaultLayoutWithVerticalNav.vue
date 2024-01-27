@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { useTheme } from 'vuetify'
+import { useTheme } from "vuetify";
 
-import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
-import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
-import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
+import VerticalNavSectionTitle from "@/@layouts/components/VerticalNavSectionTitle.vue";
+import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue";
+import VerticalNavLink from "@layouts/components/VerticalNavLink.vue";
 
 // Components
-import Footer from '@/layouts/components/Footer.vue'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
+import Footer from "@/layouts/components/Footer.vue";
+import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
+import UserProfile from "@/layouts/components/UserProfile.vue";
+import { isManager } from "../../commonState/store";
 
-const vuetifyTheme = useTheme()
+const vuetifyTheme = useTheme();
 </script>
 
 <template>
@@ -65,39 +66,41 @@ const vuetifyTheme = useTheme()
       />
 
       <!-- 👉 Для менеджера -->
-      <VerticalNavSectionTitle
-        :item="{
-          heading: 'Настройки',
-        }"
-      />
-      <VerticalNavLink
-        :item="{
-          title: 'Загрузить меню',
-          icon: 'mdi-table',
-          to: '/load-menu',
-        }"
-      />
-      <VerticalNavLink
-        :item="{
-          title: 'Отправить меню',
-          icon: 'mdi-file-send',
-          to: '/send-menu',
-        }"
-      />
-      <VerticalNavLink
-        :item="{
-          title: 'Создать рассылку',
-          icon: 'mdi-email',
-          to: '/create-newsletter',
-        }"
-      />
-      <VerticalNavLink
-        :item="{
-          title: 'Сотрудники',
-          icon: 'mdi-account-group',
-          to: '/employees',
-        }"
-      />
+      <template v-if="isManager">
+        <VerticalNavSectionTitle
+          :item="{
+            heading: 'Настройки',
+          }"
+        />
+        <VerticalNavLink
+          :item="{
+            title: 'Загрузить меню',
+            icon: 'mdi-table',
+            to: '/load-menu',
+          }"
+        />
+        <VerticalNavLink
+          :item="{
+            title: 'Отправить меню',
+            icon: 'mdi-file-send',
+            to: '/send-menu',
+          }"
+        />
+        <VerticalNavLink
+          :item="{
+            title: 'Создать рассылку',
+            icon: 'mdi-email',
+            to: '/create-newsletter',
+          }"
+        />
+        <VerticalNavLink
+          :item="{
+            title: 'Сотрудники',
+            icon: 'mdi-account-group',
+            to: '/employees',
+          }"
+        />
+      </template>
     </template>
 
     <!-- 👉 Pages -->

@@ -9,6 +9,7 @@ import { UserRoles } from './roles/user-roles.model';
 import { AuthModule } from './auth/auth.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { Menu } from './menu/models/menu.model';
+import { Ingredient } from './menu/models/ingredient.model';
 import { MenuItem } from './menu/models/menu-item.model';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { Supplier } from './suppliers/suppliers.model';
@@ -17,7 +18,6 @@ import { MenuModule } from './menu/menu.module';
 import { Dish } from './menu/models/dish.model';
 import { OrdersModule } from './orders/orders.module';
 import { OrderDish } from './orders/models/order-dish.model';
-import { Ingredient } from './menu/models/ingredients.model';
 
 @Module({
   imports: [

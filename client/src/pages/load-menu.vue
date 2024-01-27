@@ -17,7 +17,7 @@ const createNewSupplier = async () => {
       try {
         const createdSupplier = await createSupplier(newSupplier.value);
         console.log('Supplier created successfully:', createdSupplier);
-        getAllSuppliers()
+        suppliers.value = getAllSuppliers()
       } catch (error) {
        console.log(error)
       }

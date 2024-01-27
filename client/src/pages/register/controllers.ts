@@ -1,6 +1,8 @@
 import { registerUser } from "@/api/auth.api";
 import { form, registerState } from "./model";
 import router from "@/router";
+import { userRoles, token } from "../../commonState/store";
+import { saveToken } from "../../commonState/controllers";
 
 export const resetForm = () => {
   // Reset the form fields
@@ -12,17 +14,6 @@ export const resetForm = () => {
     phone: "",
     password: "",
   };
-};
-
-export const saveToken = (token) => {
-  localStorage.setItem("jwtToken", JSON.stringify(token));
-};
-
-const getToken = () => {
-  const token = localStorage.getItem("jwtToken");
-  if (token) {
-    return JSON.parse(token);
-  }
 };
 
 export const submitForm = async () => {
@@ -38,7 +29,8 @@ export const submitForm = async () => {
     };
     const response = await registerUser(payload);
     saveToken(response.token);
-    registerState.token = response.token;
+    token.value = response.token;
+    userRoles.value = response.userRole;
     resetForm();
     registerState.isRegisterSuccess = true;
     router.push("/");

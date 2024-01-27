@@ -2,12 +2,16 @@ import * as xlsx from 'xlsx';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Menu } from './models/menu.model';
 import { Dish } from './models/dish.model';
+import { Ingredient } from './models/ingredient.model';
 import { DayOfWeek, DishGroup } from './enums';
 import { MenuItem } from './models/menu-item.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { Supplier } from 'src/suppliers/suppliers.model';
-import { CreateMenuItemDto, CreateDishDto } from './dto/create-menu.dto';
-import { Ingredient } from './models/ingredients.model';
+import {
+  CreateMenuItemDto,
+  CreateDishDto,
+  CreateIngredientDto,
+} from './dto/create-menu.dto';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -17,10 +21,10 @@ export class MenuService {
     private readonly supplierRepository: typeof Supplier,
     @InjectModel(Menu)
     private readonly menuRepository: typeof Menu,
-    @InjectModel(Ingredient)
-    private readonly ingredientRepository: typeof Ingredient,
     @InjectModel(Dish)
     private readonly dishRepository: typeof Dish,
+    @InjectModel(Ingredient)
+    private readonly ingredientRepository: typeof Ingredient,
   ) {}
 
   isDayOfWeek(value: DayOfWeek): boolean {
@@ -40,6 +44,22 @@ export class MenuService {
       raw: false,
     });
     return data;
+  }
+
+  async findDishByIngredientName(ingredient: CreateIngredientDto) {
+    const existingDishes = await this.dishRepository.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${ingredient.name}%`,
+        },
+      },
+    });
+    if (!existingDishes) {
+      throw new NotFoundException(
+        `Dish with name ${ingredient.name} not found`,
+      );
+    }
+    return existingDishes;
   }
 
   async saveMenuToDataBase(
@@ -83,7 +103,9 @@ export class MenuService {
           priceSmallPortion: row[1],
           priceLargePortion: row[2],
           menuItemId: menuItemId,
+          ingredients: [] as CreateIngredientDto[],
         };
+
         currentMenuItem?.dishes.push(dish);
       } else {
         continue;
@@ -116,54 +138,43 @@ export class MenuService {
     );
   }
 
-  async saveIngridientsToDataBase(fileBuffer: Buffer, sheetName: string) {
+  async saveIngredientsToDataBase(fileBuffer: Buffer, sheetName: string) {
     const ingredientsData = await this.getSheetData(fileBuffer, sheetName);
-
-    let dishGroup;
     for (let i = 0; i < ingredientsData.length; i++) {
       const row = Object.values(ingredientsData[i]);
-      if (!row[0]) {
+
+      if (this.isGroupDish(row[0].trim() as DishGroup)) {
         continue;
       }
-      if (this.isGroupDish(row[0].trim() as DishGroup)) {
-        dishGroup = row[0];
-        continue;
-      } else {
-        let compositionComments = '';
-        if (row[2]) {
-          compositionComments = row[2];
-        }
-
-        // Проверка существования ингредиента по названию
-        const existingIngredient = await this.ingredientRepository.findOne({
-          where: {
-            name: {
-              [Op.like]: `%${row[0]}%`,
-            },
-          },
-        });
-
-        if (!existingIngredient) {
-          const ingredientItem = {
-            name: row[0],
-            category: dishGroup,
-            composition: row[1],
-            comments: compositionComments,
-          };
-
-          await this.ingredientRepository.create(ingredientItem);
+      const ingredient: CreateIngredientDto = {
+        name: row[0],
+        composition: row[1],
+        comments: row[2],
+      };
+      const existingDishes = await this.findDishByIngredientName(ingredient);
+      if (existingDishes?.length > 0) {
+        for (const existingDish of existingDishes) {
+          try {
+            await this.ingredientRepository.create({
+              name: ingredient.name,
+              composition: ingredient.composition,
+              comments: ingredient.comments,
+              dishId: existingDish.id,
+            });
+          } catch (error) {
+            console.error(error.message);
+          }
         }
       }
     }
   }
 
   async readMenuFromExcel(fileBuffer: Buffer, supplierId: number) {
-    const sheetMenuName = 'вспомогательный';
-    const sheetIngredientsName = 'составы';
+    const sheetMenuName1 = 'вспомогательный-1';
+    const sheetMenuName2 = 'составы-1';
 
-    await this.saveMenuToDataBase(fileBuffer, supplierId, sheetMenuName);
-
-    await this.saveIngridientsToDataBase(fileBuffer, sheetIngredientsName);
+    await this.saveMenuToDataBase(fileBuffer, supplierId, sheetMenuName1);
+    await this.saveIngredientsToDataBase(fileBuffer, sheetMenuName2);
   }
 
   async getCurrentMenuWithIngredients(): Promise<Menu[]> {
@@ -180,7 +191,7 @@ export class MenuService {
                 as: 'dishes',
                 include: [
                   {
-                    model: Ingredient,
+                    model: Dish, // Dish includes itself for ingredients
                     as: 'ingredients',
                   },
                 ],

@@ -34,6 +34,8 @@ export class MenuController {
     type: FileUploadDto,
   })
   @ApiResponse({ status: 201, description: 'Success' })
+  //   @Roles(UserRole.MANAGER)
+  //   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Post('upload-excel')
   @UseInterceptors(FileInterceptor('file'))
@@ -61,7 +63,7 @@ export class MenuController {
   @ApiResponse({ status: 200, type: [Menu] })
   async getMenuForOrder(): Promise<any> {
     try {
-      const menu = await this.menuService.getCurrentMenu();
+      const menu = await this.menuService.getCurrentMenuWithIngredients();
       return { success: true, menu };
     } catch (error) {
       return { success: false, error: error.message };

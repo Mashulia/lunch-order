@@ -3,6 +3,8 @@ import { form, loginState } from "./model";
 import { saveToken } from "../register/controllers";
 import router from "@/router";
 import { registerState } from "../register/model";
+import { userRoles, token } from "../../commonState/store";
+import { saveToken } from "../../commonState/controllers";
 
 export const login = async () => {
   try {
@@ -10,7 +12,8 @@ export const login = async () => {
     if (response) {
       saveToken(response.token);
       loginState.isLoginSuccess = true;
-      registerState.token = response.token;
+      token.value = response.token;
+      userRoles.value = response.userRole;
       router.push("/");
     }
   } catch (error) {
