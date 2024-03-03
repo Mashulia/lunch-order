@@ -9,7 +9,6 @@ const categories = [
   "Выпечка",
 ];
 
-// Пример функции для определения дня недели по дате
 function getDayOfWeek(dateStr: string) {
   // Предполагается, что dateStr в формате "MM/DD/YY"
   const [month, day, year] = dateStr.split("/");

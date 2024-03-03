@@ -17,11 +17,17 @@ import { Order } from './order/order.model';
 import { MenuModule } from './menu/menu.module';
 import { Dish } from './menu/models/dish.model';
 import { OrderModule } from './order/order.module';
-import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 import { EmailModule } from './email/email.module';
-
+import { TelegrafModule } from 'nestjs-telegraf';
+import { AppUpdate } from './app.update';
+import * as LocalSession from 'telegraf-session-local';
+const sessions = new LocalSession({ database: 'session_db.json' });
 @Module({
   imports: [
+    TelegrafModule.forRoot({
+      middlewares: [sessions.middleware()],
+      token: '7122758875:AAFWr9-MtMnVejvcJNgrFi0p3tAjmMgPfyM',
+    }),
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
@@ -53,8 +59,8 @@ import { EmailModule } from './email/email.module';
     MenuModule,
     SuppliersModule,
     OrderModule,
-    TelegramBotModule,
     EmailModule,
   ],
+  providers: [AppUpdate],
 })
 export class AppModule {}

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Inject,
   Param,
@@ -10,6 +11,7 @@ import {
   Patch,
   Post,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,6 +20,9 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderService } from './order.service';
 import { Order } from './order.model';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { UserRole } from 'src/roles/roles.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @ApiTags('Заказы')
 @Controller('order')
@@ -32,7 +37,7 @@ export class OrderController {
   //   getAllOrders() {
   //     return this.orderService.getAllOrders();
   //   }
-  @ApiOperation({ summary: 'Получить заказы' })
+  @ApiOperation({ summary: 'Получить заказы текущего пользователя' })
   @ApiResponse({ status: 200, type: [Order] })
   @Get(':id')
   getOrdersById(@Param('id', ParseIntPipe) id: number) {
@@ -63,6 +68,8 @@ export class OrderController {
   }
 
   @ApiOperation({ summary: 'Получить все заказы пользователей' })
+  @Roles(UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
@@ -73,26 +80,4 @@ export class OrderController {
     const orders = await this.orderService.getAllOrders();
     return res.status(HttpStatus.OK).json(orders);
   }
-
-  //   @ApiOperation({ summary: 'Получение заказов текущей недели' })
-  //   @Get('user/:userId/week/:startDate')
-  //   getUserOrdersForWeek(
-  //     @Param('userId', ParseIntPipe) userId: number,
-  //     @Param('startDate') startDate: string,
-  //   ) {
-  //     const parsedStartDate = new Date(startDate);
-  //     return this.orderService.getUserOrdersForWeek(userId, parsedStartDate);
-  //   }
-
-  //   @ApiOperation({ summary: 'Получение заказа на текущий день' })
-  //   @Get('user/currentDayOrder')
-  //   async getUserOrdersForCurrentDateByName(@Body() requestBody: any) {
-  //     const { firstName, lastName, currentDate } = requestBody;
-  //     const orders = await this.orderService.getUserOrdersForCurrentDateByName(
-  //       firstName,
-  //       lastName,
-  //       currentDate,
-  //     );
-  //     return { orders };
-  //   }
 }

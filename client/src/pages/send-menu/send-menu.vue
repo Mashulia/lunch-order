@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ProviderMenuTable from "@/views/pages/send-menu/ProviderMenuTable.vue";
+import { correctTableTitles, getCommonMenu } from "./controllers";
 
 const route = useRoute();
 
@@ -9,6 +10,11 @@ const tabs = [
   { title: "Бизнес-ланч", icon: "mdi-menu", tab: "provider1" },
   { title: "Еще один поставщик", icon: "mdi-menu", tab: "provider2" },
 ];
+
+onMounted(() => {
+  getCommonMenu();
+  correctTableTitles();
+});
 </script>
 
 <template>

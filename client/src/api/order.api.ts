@@ -1,4 +1,4 @@
-import { user } from "@/commonState/store";
+import { token, user } from "@/commonState/store";
 import { axiosInstance } from "./config";
 import { transformOrderData } from "@/pages/cart/controllers";
 
@@ -52,5 +52,18 @@ export const getAllUserOrders = async (userId: number) => {
     return response.data;
   } catch (error) {
     throw new Error("Error getting order");
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const response = await axiosInstance.get(`/order`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Error getting orders");
   }
 };
