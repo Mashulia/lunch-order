@@ -64,7 +64,6 @@ export class OrderService {
         orderDate: updateOrderDto.orderDate,
       },
     });
-    console.log(order);
 
     if (!order) {
       throw new NotFoundException(`Order was not found`);
@@ -106,6 +105,22 @@ export class OrderService {
     // Обновленный список заказов после удаления текущего заказа
     const updatedOrders = await this.getAllOrdersByUserId(id);
     return updatedOrders;
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    const orders = await this.orderRepository.findAll({
+      include: [
+        {
+          model: Dish,
+          as: 'dish',
+        },
+        {
+          model: User,
+          as: 'user',
+        },
+      ],
+    });
+    return orders;
   }
 
   //   async getUserOrdersForWeek(userId: number, startDate: Date) {

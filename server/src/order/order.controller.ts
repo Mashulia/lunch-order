@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -58,6 +60,18 @@ export class OrderController {
   @Delete(':id')
   deleteOrder(@Param('id', ParseIntPipe) id: number, @Body() dishId: number) {
     return this.orderService.deleteOrder(id, dishId);
+  }
+
+  @ApiOperation({ summary: 'Получить все заказы пользователей' })
+  @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Найденные записи',
+    type: [Order],
+  })
+  async getAllOrders(@Res() res) {
+    const orders = await this.orderService.getAllOrders();
+    return res.status(HttpStatus.OK).json(orders);
   }
 
   //   @ApiOperation({ summary: 'Получение заказов текущей недели' })
