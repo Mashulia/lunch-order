@@ -18,8 +18,7 @@ export const deleteSupplier = async (supplierId) => {
     const response = await axiosInstance.delete(`/suppliers/${supplierId}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting supplier:", error.message);
-    throw error;
+    throw new Error("Error deleting supplier:");
   }
 };
 
@@ -28,7 +27,6 @@ export const getAllSuppliers = async () => {
     const response = await axiosInstance.get(`/suppliers`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching suppliers:", error.message);
-    throw error;
+    throw new Error("Error fetching suppliers");
   }
 };

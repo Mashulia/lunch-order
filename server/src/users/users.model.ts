@@ -7,7 +7,9 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
-import { EmployeeOrder } from 'src/orders/models/order.model';
+import { Order } from 'src/order/order.model';
+// import { OrderDish } from 'src/orders/models/order-dish.model';
+// import { Order } from 'src/orders/models/order.model';
 import { Role } from 'src/roles/roles.model';
 import { UserRoles } from 'src/roles/user-roles.model';
 
@@ -21,9 +23,6 @@ interface UserCreationAttrs {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, UserCreationAttrs> {
-  static remove(user: User) {
-    throw new Error('Method not implemented.');
-  }
   @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
   @Column({
     type: DataType.INTEGER,
@@ -126,6 +125,6 @@ export class User extends Model<User, UserCreationAttrs> {
   @BelongsToMany(() => Role, () => UserRoles)
   roles: Role[];
 
-  @HasMany(() => EmployeeOrder)
-  orders: EmployeeOrder[];
+  @HasMany(() => Order)
+  orders: Order[];
 }

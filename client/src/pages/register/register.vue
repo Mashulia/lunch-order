@@ -7,6 +7,7 @@ import authV1Tree2 from "@images/pages/auth-v1-tree-2.png";
 import authV1Tree from "@images/pages/auth-v1-tree.png";
 import { submitForm } from "./controllers";
 import { registerState, form } from "./model";
+import { isFormEmailValid } from "../login/model";
 
 const vuetifyTheme = useTheme();
 
@@ -17,6 +18,20 @@ const authThemeMask = computed(() => {
 });
 
 const isPasswordVisible = ref(false);
+
+const isRegisterEnabled = computed(
+  () =>
+    form.value.firstName &&
+    form.value.lastName &&
+    form.value.middleName &&
+    form.value.password &&
+    !isFormEmailValid.value
+);
+
+onBeforeUnmount(() => {
+  registerState.isRegisterSuccess = false;
+  registerState.isRegisterFailed = false;
+})
 </script>
 
 <template>
@@ -50,6 +65,7 @@ const isPasswordVisible = ref(false);
             <VCol cols="12">
               <VTextField
                 v-model="form.email"
+                :rules="emailRules"
                 label="Email"
                 type="email"
                 required
@@ -76,7 +92,9 @@ const isPasswordVisible = ref(false);
             </VCol>
 
             <VCol>
-              <VBtn block type="submit"> Создать аккаунт </VBtn>
+              <VBtn block type="submit" :disabled="!isRegisterEnabled">
+                Создать аккаунт
+              </VBtn>
             </VCol>
 
             <!-- login instead -->

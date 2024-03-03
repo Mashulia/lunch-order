@@ -119,7 +119,7 @@ export class MenuService {
     await this.menuRepository.create(
       {
         supplierId: supplierId,
-        menuItems: menuItems as MenuItem[],
+        menuItems: menuItems as unknown as MenuItem[],
       },
       {
         include: [
@@ -170,8 +170,8 @@ export class MenuService {
   }
 
   async readMenuFromExcel(fileBuffer: Buffer, supplierId: number) {
-    const sheetMenuName1 = 'вспомогательный-1';
-    const sheetMenuName2 = 'составы-1';
+    const sheetMenuName1 = 'вспомогательный';
+    const sheetMenuName2 = 'составы';
 
     await this.saveMenuToDataBase(fileBuffer, supplierId, sheetMenuName1);
     await this.saveIngredientsToDataBase(fileBuffer, sheetMenuName2);
@@ -181,6 +181,7 @@ export class MenuService {
     try {
       const currentMenus = await this.menuRepository.findAll({
         order: [['createdAt', 'DESC']],
+        limit: 1,
         include: [
           {
             model: MenuItem,
@@ -191,8 +192,8 @@ export class MenuService {
                 as: 'dishes',
                 include: [
                   {
-                    model: Dish, // Dish includes itself for ingredients
-                    as: 'ingredients',
+                    model: Ingredient,
+                    as: 'ingredient',
                   },
                 ],
               },

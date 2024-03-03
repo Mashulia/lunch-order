@@ -19,8 +19,15 @@ export class AuthService {
   ) {}
 
   async login(userDto: LoginUserDto) {
-    const user = await this.validateUser(userDto);
-    return this.generateToken(user);
+    try {
+      const user = await this.validateUser(userDto);
+      return this.generateToken(user);
+    } catch (error) {
+      throw new HttpException(
+        'Некорректные учетные данные',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
   }
 
   async registration(userDto: CreateUserDto) {
@@ -40,11 +47,27 @@ export class AuthService {
   }
 
   private async generateToken(user: User) {
-    const payload = { email: user.email, id: user.id, roles: user.roles };
+    const payload = {
+      email: user.email,
+      id: user.id,
+      roles: user.roles,
+    };
+    const userResponse = {
+      id: user.id,
+      avatarPhotoUrl: user.avatarPhotoUrl,
+      phone: user.phone,
+      lastName: user.lastName,
+      firstName: user.firstName,
+      middleName: user.middleName,
+      isShowOnlyVegetarian: user.isShowOnlyVegetarian,
+      isReceiveEmails: user.isReceiveEmails,
+      email: user.email,
+      roles: user.roles.map((userRole) => userRole.value),
+    };
 
     return {
       token: this.jwtService.sign(payload),
-      userRole: user.roles,
+      user: userResponse,
     };
   }
 

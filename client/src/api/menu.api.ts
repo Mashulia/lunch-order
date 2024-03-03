@@ -12,6 +12,15 @@ export const uploadMenu = async (formData, supplierName) => {
       console.error("Ошибка при загрузке меню");
     }
   } catch (error) {
-    console.error("Ошибка при выполнении запроса:", error);
+    throw new Error("Error upload menu");
+  }
+};
+
+export const getMenu = async () => {
+  try {
+    const response = await axiosInstance.get("/menu");
+    return response.data;
+  } catch (error) {
+    throw new Error("Error getting menu");
   }
 };

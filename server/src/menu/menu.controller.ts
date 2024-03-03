@@ -50,7 +50,6 @@ export class MenuController {
     try {
       await this.menuService.readMenuFromExcel(file.buffer, supplierId);
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Error processing Excel file',
         HttpStatus.INTERNAL_SERVER_ERROR,

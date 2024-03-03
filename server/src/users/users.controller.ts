@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
   UsePipes,
@@ -19,6 +20,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { UserRole } from 'src/roles/roles.enum';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -35,7 +37,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, type: [User] })
-  //   @Roles(UserRole.MANAGER)
+  @Roles(UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Get()
   getAllUsers() {
@@ -44,7 +46,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Удалить пользователя' })
   @ApiResponse({ status: 200, type: [User] })
-  //   @Roles(UserRole.MANAGER)
+  @Roles(UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -59,5 +61,17 @@ export class UsersController {
   @Post('/role')
   addRole(@Body() dto: AddRoleDto) {
     return this.usersService.addRole(dto);
+  }
+
+  @ApiOperation({ summary: 'Обновление пользователя' })
+  @ApiResponse({ status: 200, type: User })
+  @UsePipes(ValidationPipe)
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateUser(
+    @Param('id') userId: number,
+    @Body() updateUserDto: Partial<UpdateUserDto>,
+  ) {
+    return this.usersService.updateUser(userId, updateUserDto);
   }
 }

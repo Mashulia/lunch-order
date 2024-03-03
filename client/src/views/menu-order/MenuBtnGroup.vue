@@ -4,18 +4,18 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: "toggleDay", val: PointerEvent): void;
+  (e: "toggleDay", val: string): void;
 }>();
 
 const activeDayCopy = ref("");
-const daysWeek = ["Пн", "Вт", "Ср", "Чт", "Пт"];
+const daysWeek = { Пн: "Пн", Вт: "Вт", Ср: "Ср", Чт: "Чт", Пт: "Пт" };
 
 onMounted(() => {
   activeDayCopy.value = props.activeDay;
 });
 
-const toggleday = (val: PointerEvent) => {
-  emits("toggleDay", val);
+const toggleday = () => {
+  emits("toggleDay", activeDayCopy.value);
 };
 </script>
 

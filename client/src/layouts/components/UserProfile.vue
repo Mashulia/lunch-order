@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import avatar1 from "@images/avatars/avatar-1.png";
-import { registerState } from "@/pages/register/model";
 import { logout } from "@/pages/register/controllers";
+import { token } from "@/commonState/store";
+import { user } from "@/commonState/store";
 </script>
 
 <template>
@@ -14,7 +15,7 @@ import { logout } from "@/pages/register/controllers";
     bordered
   >
     <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-      <VImg :src="avatar1" />
+      <VImg :src="user.avatarPhotoUrl || avatar1" />
 
       <!-- SECTION Menu -->
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
@@ -31,7 +32,7 @@ import { logout } from "@/pages/register/controllers";
                   color="success"
                 >
                   <VAvatar color="primary" variant="tonal">
-                    <VImg :src="avatar1" />
+                    <VImg :src="user.avatarPhotoUrl || avatar1" />
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
@@ -43,7 +44,7 @@ import { logout } from "@/pages/register/controllers";
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem to="/profile" :disabled="!registerState.token">
+          <VListItem to="/profile" :disabled="!token">
             <template #prepend>
               <VIcon class="me-2" icon="mdi-account-outline" size="22" />
             </template>
@@ -55,7 +56,7 @@ import { logout } from "@/pages/register/controllers";
           <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem to="/login" v-if="!registerState.token">
+          <VListItem to="/login" v-if="!token">
             <template #prepend>
               <VIcon class="me-2" icon="mdi-login" size="22" />
             </template>

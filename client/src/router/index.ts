@@ -3,22 +3,22 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", redirect: "/menu-order" },
+    { path: "/", redirect: "login" },
     {
       path: "/",
       component: () => import("../layouts/default.vue"),
       children: [
         {
           path: "menu-order",
-          component: () => import("../pages/menu-order.vue"),
+          component: () => import("../pages/menu/menu-order.vue"),
         },
         {
           path: "cart",
-          component: () => import("../pages/cart.vue"),
+          component: () => import("../pages/cart/cart.vue"),
         },
         {
           path: "load-menu",
-          component: () => import("../pages/load-menu.vue"),
+          component: () => import("../pages/menu/load-menu.vue"),
         },
         {
           path: "summary",
@@ -30,7 +30,7 @@ const router = createRouter({
         },
         {
           path: "send-menu",
-          component: () => import("../pages/send-menu.vue"),
+          component: () => import("../pages/send-menu/send-menu.vue"),
         },
         {
           path: "employees",

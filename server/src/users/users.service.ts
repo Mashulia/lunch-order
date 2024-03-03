@@ -10,6 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import { UserRole } from 'src/roles/roles.enum';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -27,8 +28,16 @@ export class UsersService {
   }
 
   async getAllUsers() {
-    const users = await this.userRepository.findAll({ include: { all: true } });
+    const users = await this.userRepository.findAll();
     return users;
+  }
+
+  async getUsersByEmails(emails: string[]): Promise<User[]> {
+    return this.userRepository.findAll({
+      where: {
+        email: emails,
+      },
+    });
   }
 
   async deleteUser(userId: number) {
@@ -63,5 +72,20 @@ export class UsersService {
       'Пользователь или роль не найдены',
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async updateUser(
+    id: number,
+    updateUserDto: Partial<UpdateUserDto>,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    for (const field in updateUserDto) {
+      user[field] = updateUserDto[field];
+    }
+    await user.save();
+    return user;
   }
 }

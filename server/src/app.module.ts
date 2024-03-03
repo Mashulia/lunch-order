@@ -13,11 +13,12 @@ import { Ingredient } from './menu/models/ingredient.model';
 import { MenuItem } from './menu/models/menu-item.model';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { Supplier } from './suppliers/suppliers.model';
-import { EmployeeOrder } from './orders/models/order.model';
+import { Order } from './order/order.model';
 import { MenuModule } from './menu/menu.module';
 import { Dish } from './menu/models/dish.model';
-import { OrdersModule } from './orders/orders.module';
-import { OrderDish } from './orders/models/order-dish.model';
+import { OrderModule } from './order/order.module';
+import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -40,8 +41,7 @@ import { OrderDish } from './orders/models/order-dish.model';
         Dish,
         Ingredient,
         Supplier,
-        EmployeeOrder,
-        OrderDish,
+        Order,
       ],
       autoLoadModels: true,
       synchronize: true,
@@ -52,7 +52,9 @@ import { OrderDish } from './orders/models/order-dish.model';
     AuthModule,
     MenuModule,
     SuppliersModule,
-    OrdersModule,
+    OrderModule,
+    TelegramBotModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

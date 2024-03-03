@@ -1,87 +1,99 @@
 <script setup lang="ts">
+interface Ingredient {
+  composition: string;
+  comments: string;
+}
+
 interface Dish {
-  type: string
-  title: string
-  weight: string
-  price?: number
-  smallPortionPrice?: number
-  bigPortionPrice?: number
+  id: number;
+  type: string;
+  title: string;
+  priceLargePortion: number | null;
+  priceSmallPortion: number | null;
+  ingredient: Ingredient[];
 }
 
 interface Props {
-  dish: Dish
+  dish: Dish;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emits = defineEmits<{
-  (e: 'makeOrder', val: number): void
-}>()
+  (
+    e: "makeOrder",
+    val: number,
+    id: number,
+    smallPortionQty: number,
+    bigPortionQty: number
+  ): void;
+}>();
 
-const smallPortionQty = ref(0)
-const bigPortionQty = ref(0)
-const qty = ref(0)
+const smallPortionQty = ref(0);
+const bigPortionQty = ref(0);
 
-const totalPrice = computed(() => {
-  return bigPortionQty.value * props.dish.bigPortionPrice + smallPortionQty.value * props.dish.smallPortionPrice
-})
+const totalPrice = computed<number>(() => {
+  const totalPriceBigPortion = props.dish.priceLargePortion
+    ? bigPortionQty.value * props.dish.priceLargePortion
+    : 0;
 
-const numberRule = val => {
-  if (val < 0) return 'Please enter a positive number'
+  const totalPriceSmallPortion = props.dish.priceSmallPortion
+    ? smallPortionQty.value * props.dish.priceSmallPortion
+    : 0;
+  return totalPriceBigPortion + totalPriceSmallPortion;
+});
 
-  return true
-}
+const numberRule = (val) => {
+  if (val < 0) return "Please enter a positive number";
+
+  return true;
+};
 
 const makeOrder = (dish: Dish) => {
-  const price = totalPrice.value ? totalPrice.value : dish!.price * qty.value
+  if (totalPrice.value) {
+    emits(
+      "makeOrder",
+      totalPrice.value as number,
+      props.dish.id,
+      smallPortionQty.value,
+      bigPortionQty.value
+    );
+  }
+};
 
-  emits('makeOrder', price as number)
-}
-
-const show = ref(false)
+const show = ref(false);
 </script>
 
 <template>
-  <VCard
-    class="position-relative"
-    link
-  >
+  <VCard class="position-relative" link>
     <template #title>
-      <VDialog
-        v-if="dish.composition"
-        width="500"
-      >
+      <VDialog v-if="dish.ingredient.length" width="500">
         <template #activator="{ props }">
           <div v-bind="props">
             {{ dish.title }}
-            <VTooltip
-              activator="parent"
-              location="top"
-            >
-              Показать состав
+            <VTooltip activator="parent" location="top">
+              {{ dish.title }}
             </VTooltip>
           </div>
         </template>
 
         <template #default="{ isActive }">
           <VCard title="Состав">
-            <VCardText
-              v-for="item in dish.composition"
-              :key="item"
-            >
-              {{ item }}
-            </VCardText>
-            <VCardText v-if="dish.notes">
-              <VChip>{{ dish.notes }}</VChip>
-            </VCardText>
+            <VCardText v-for="(ingredient, i) in dish.ingredient" :key="i">
+              <div>
+                {{ ingredient.composition }}
+              </div>
 
+              <VChip
+                v-if="ingredient.comments"
+                :style="'word-break: break-word, white-space: wrap'"
+                >{{ ingredient.comments }}</VChip
+              >
+            </VCardText>
             <VCardActions>
               <VSpacer />
 
-              <VBtn
-                text="Закрыть"
-                @click="isActive.value = false"
-              />
+              <VBtn text="Закрыть" @click="isActive.value = false" />
             </VCardActions>
           </VCard>
         </template>
@@ -92,30 +104,17 @@ const show = ref(false)
       </div>
     </template>
 
-    <VRow class="pa-2 ma-2">
-      <div>
-        Вес - {{ dish.weight }}
-        <VTooltip
-          v-if="dish.type === 'secondDish'"
-          activator="parent"
-          location="bottom"
-        >
-          вес мал.мяса / вес бол.мяса / вес гарнира
-        </VTooltip>
-      </div>
-    </VRow>
-
     <VRow
-      v-if="dish.type !== 'secondDish'"
+      v-if="dish.priceSmallPortion"
       class="pa-2 ma-2"
       justify="space-between"
       align="center"
     >
       <div class="mb-8">
-        {{ `Стоимость - ${dish.price} руб.` }}
+        {{ `Стоимость(M) - ${dish.priceSmallPortion} руб.` }}
       </div>
       <VTextField
-        v-model="qty"
+        v-model="smallPortionQty"
         clearable
         class="mb-8"
         hide-details="auto"
@@ -125,39 +124,19 @@ const show = ref(false)
         min="0"
       />
     </VRow>
-
     <VRow
-      v-if="dish.type === 'secondDish'"
+      v-if="dish.priceLargePortion"
       class="pa-2 ma-2"
       justify="space-between"
       align="center"
     >
-      <div class="mb-3">
-        {{ `Маленькая порция - ${dish.bigPortionPrice} руб.` }}
-      </div>
-      <VTextField
-        v-model="smallPortionQty"
-        clearable
-        hide-details="auto"
-        :rules="[numberRule]"
-        label="Количество порций"
-        type="number"
-        min="0"
-      />
-    </VRow>
-
-    <VRow
-      v-if="dish.type === 'secondDish'"
-      class="pa-2 ma-2"
-      justify="space-between"
-      align="center"
-    >
-      <div class="mb-3">
-        {{ `Большая порция - ${dish.bigPortionPrice} руб.` }}
+      <div class="mb-8">
+        {{ `Стоимость(Б) - ${dish.priceLargePortion} руб.` }}
       </div>
       <VTextField
         v-model="bigPortionQty"
         clearable
+        class="mb-8"
         hide-details="auto"
         :rules="[numberRule]"
         label="Количество порций"
@@ -165,27 +144,14 @@ const show = ref(false)
         min="0"
       />
     </VRow>
-
-    <VRow
-      justify="space-between"
-      class="pa-2 ma-2 pt-0 mt-0"
-    >
+    <VRow justify="space-between" class="pa-2 ma-2 pt-0 mt-0">
       <VCol cols="6 ma-0 pa-0">
-        <VBtn
-          block
-          @click="makeOrder(dish)"
-        >
-          Заказать
-        </VBtn>
+        <VBtn block @click="makeOrder(dish)"> Заказать </VBtn>
       </VCol>
 
-      <VCol
-        cols="6  ma-0 pa-0"
-        align="end"
-      >
+      <VCol cols="6  ma-0 pa-0" align="end">
         <h5 class="text-2xl font-weight-medium text-primary">
-          <span v-if="totalPrice"> {{ totalPrice }} руб. </span>
-          <span v-else-if="qty"> {{ dish.price * qty }} руб. </span>
+          <span> {{ totalPrice }} руб. </span>
         </h5>
       </VCol>
     </VRow>

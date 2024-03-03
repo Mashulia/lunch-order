@@ -1,7 +1,9 @@
+import useVuelidate from "@vuelidate/core";
+import { emailRules } from "../login/model";
+
 export const registerState = reactive({
   isRegisterFailed: false,
   isRegisterSuccess: false,
-  token: null,
 });
 
 export const form = ref({
@@ -12,3 +14,9 @@ export const form = ref({
   phone: "",
   password: "",
 });
+
+const initialForm = reactive({
+  ...form.value,
+});
+
+export const v$ = useVuelidate(emailRules, initialForm);

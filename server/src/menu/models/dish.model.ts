@@ -12,6 +12,8 @@ import { DishGroup } from '../enums';
 import { Ingredient } from './ingredient.model';
 import { MenuItem } from './menu-item.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { Order } from 'src/order/order.model';
+// import { OrderDish } from 'src/orders/models/order-dish.model';open-api-spec.interface';
 
 @Table({ tableName: 'dishes' })
 export class Dish extends Model<Dish> {
@@ -77,7 +79,9 @@ export class Dish extends Model<Dish> {
   @BelongsTo(() => MenuItem, 'menuItemId')
   menu: MenuItem;
 
-  // Добавление связи с моделью ингредиента
   @HasMany(() => Ingredient)
-  ingredients: Ingredient[];
+  ingredient: Ingredient[];
+
+  @HasMany(() => Order, 'dishId')
+  orders: Order[];
 }

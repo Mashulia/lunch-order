@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { uploadMenu } from '@/api/menu-upload.api';
 import { createSupplier, getAllSuppliers } from '@/api/supplier.api';
+import { saveMenu } from './controllers';
 
 const suppliers = ref([])
 const currentSupplier = ref<string>('')
@@ -31,18 +31,6 @@ const getSuppliers = async () => {
       }
 }
 
-const saveMenu = async () => {
-  const formData = new FormData();
-uploadedFile.value.forEach(file => {
-    formData.append('file', file);
-});
-
-    uploadMenu(formData, currentSupplier.value).catch(() => {
-    console.error('Error saving menu:', error);
-    isError.value = true
-  })
-
-}
 
 onMounted(() => {
   getSuppliers()
@@ -130,7 +118,7 @@ onMounted(() => {
               <VCard>
                 <VCardText>
                   <div
-                    v-if="!isError"
+                    v-if="isError"
                     class="text-h2 pa-12 text-center"
                   >
                     <VIcon
