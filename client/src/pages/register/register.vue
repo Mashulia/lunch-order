@@ -31,7 +31,7 @@ const isRegisterEnabled = computed(
 onBeforeUnmount(() => {
   registerState.isRegisterSuccess = false;
   registerState.isRegisterFailed = false;
-})
+});
 </script>
 
 <template>

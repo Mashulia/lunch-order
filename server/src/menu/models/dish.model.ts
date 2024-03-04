@@ -7,7 +7,7 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 import { DishGroup } from '../enums';
 import { Ingredient } from './ingredient.model';
 import { MenuItem } from './menu-item.model';
@@ -28,6 +28,24 @@ export class Dish extends Model<Dish> {
     primaryKey: true,
   })
   id: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    type: 'integer',
+    description: 'Количество маленьких порций',
+  })
+  @Column({ type: DataType.INTEGER })
+  smallPortionQty?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    type: 'integer',
+    description: 'Количество больших порций',
+  })
+  @Column({ type: DataType.INTEGER })
+  bigPortionQty?: number;
 
   @IsString()
   @ApiProperty({

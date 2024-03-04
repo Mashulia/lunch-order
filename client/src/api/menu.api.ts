@@ -1,3 +1,4 @@
+import { user } from "@/commonState/store";
 import { axiosInstance } from "./config";
 
 export const uploadMenu = async (formData, supplierName) => {
@@ -18,7 +19,11 @@ export const uploadMenu = async (formData, supplierName) => {
 
 export const getMenu = async () => {
   try {
-    const response = await axiosInstance.get("/menu");
+    const response = await axiosInstance.get("/menu", {
+      params: {
+        userId: user.value.id,
+      },
+    });
     return response.data;
   } catch (error) {
     throw new Error("Error getting menu");

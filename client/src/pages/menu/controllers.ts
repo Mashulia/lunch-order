@@ -13,6 +13,12 @@ import {
 
 export const isOrderCreateSuccessfully = ref(false);
 export const isOrderCreateFailed = ref(false);
+export const uploadedFile = ref();
+export const currentSupplier = ref<string>("");
+export const suppliers = ref([]);
+export const role = "manager";
+export const newSupplier = ref("");
+export const isError = ref(false);
 
 export const saveMenu = async () => {
   const formData = new FormData();
@@ -20,7 +26,7 @@ export const saveMenu = async () => {
     formData.append("file", file);
   });
 
-  uploadMenu(formData, currentSupplier.value).catch(() => {
+  uploadMenu(formData, currentSupplier.value).catch((error) => {
     console.error("Error saving menu:", error);
     isError.value = true;
   });
@@ -33,6 +39,8 @@ const fillMenu = (dayOfWeek, dish) => {
     type: dish.category,
     title: dish.name,
     priceLargePortion: dish.priceLargePortion,
+    smallPortionQty: dish.smallPortionQty,
+    bigPortionQty: dish.bigPortionQty,
     priceSmallPortion: dish.priceSmallPortion,
     ingredient: dish.ingredient.map((item) => {
       if (user.value.isShowOnlyVegetarian) {
@@ -103,12 +111,12 @@ export const createUserOrder = (
       isOrderCreateSuccessfully.value = true;
       setTimeout(() => {
         isOrderCreateSuccessfully.value = false;
-      }, 5000);
+      }, 1000);
     })
     .catch((err) => {
       isOrderCreateFailed.value = true;
       setTimeout(() => {
         isOrderCreateFailed.value = false;
-      }, 5000);
+      }, 1000);
     });
 };

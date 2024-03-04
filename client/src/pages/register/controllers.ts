@@ -34,7 +34,7 @@ export const submitForm = async () => {
     registerState.isRegisterSuccess = true;
     setTimeout(() => {
       registerState.isRegisterSuccess = false;
-    }, 5000);
+    }, 1000);
     router.push("/menu-order");
     v$.value.$reset();
   } catch (error) {
@@ -42,7 +42,7 @@ export const submitForm = async () => {
     registerState.isRegisterFailed = true;
     setTimeout(() => {
       registerState.isRegisterFailed = false;
-    }, 5000);
+    }, 1000);
   }
 };
 

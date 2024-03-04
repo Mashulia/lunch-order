@@ -6,7 +6,7 @@ import { Ingredient } from './models/ingredient.model';
 import { DayOfWeek, DishGroup } from './enums';
 import { MenuItem } from './models/menu-item.model';
 import { InjectModel } from '@nestjs/sequelize';
-import { Supplier } from 'src/suppliers/suppliers.model';
+import { OrderService } from 'src/order/order.service';
 import {
   CreateMenuItemDto,
   CreateDishDto,
@@ -17,14 +17,13 @@ import { Op } from 'sequelize';
 @Injectable()
 export class MenuService {
   constructor(
-    @InjectModel(Supplier)
-    private readonly supplierRepository: typeof Supplier,
     @InjectModel(Menu)
     private readonly menuRepository: typeof Menu,
     @InjectModel(Dish)
     private readonly dishRepository: typeof Dish,
     @InjectModel(Ingredient)
     private readonly ingredientRepository: typeof Ingredient,
+    private readonly orderServise: OrderService,
   ) {}
 
   isDayOfWeek(value: DayOfWeek): boolean {
@@ -204,6 +203,67 @@ export class MenuService {
 
       if (!currentMenus || currentMenus.length === 0) {
         throw new NotFoundException('Current menu not found');
+      }
+
+      return currentMenus;
+    } catch (error) {
+      throw new NotFoundException(
+        `Error finding current menu: ${error.message}`,
+      );
+    }
+  }
+
+  async getCurrentMenuWithIngredientsAndOrderedPortions(
+    userId: number,
+  ): Promise<Menu[]> {
+    try {
+      // Получаем текущее меню
+      const currentMenus = await this.menuRepository.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 1,
+        include: [
+          {
+            model: MenuItem,
+            as: 'menuItems',
+            include: [
+              {
+                model: Dish,
+                as: 'dishes',
+                include: [
+                  {
+                    model: Ingredient,
+                    as: 'ingredient',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!currentMenus || currentMenus.length === 0) {
+        throw new NotFoundException('Current menu not found');
+      }
+      // Получаем заказы пользователя
+      const userOrders = await this.orderServise.getAllOrdersByUserId(userId);
+      console.log(userOrders);
+      // Проходимся по каждому блюду в текущем меню
+      for (const menu of currentMenus) {
+        for (const menuItem of menu.menuItems) {
+          for (const dish of menuItem.dishes) {
+            // Находим заказы пользователя для этого блюда
+            const userOrdersForDish = userOrders.filter((order) => {
+              return order.dishId === dish.id;
+            });
+            if (userOrdersForDish.length) {
+              userOrdersForDish.forEach((userOrder) => {
+                dish.smallPortionQty = userOrder.smallPortionQty;
+                dish.bigPortionQty = userOrder.bigPortionQty;
+              });
+            }
+            dish.save();
+          }
+        }
       }
 
       return currentMenus;

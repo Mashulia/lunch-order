@@ -22,6 +22,7 @@ const authThemeMask = computed(() => {
     : authV1MaskDark;
 });
 
+const isPasswordVisible = ref(false);
 onBeforeUnmount(() => {
   loginState.isLoginFailed = false;
   loginState.isLoginSuccess = false;
@@ -58,9 +59,13 @@ onBeforeUnmount(() => {
             <VCol cols="12">
               <VTextField
                 v-model="form.password"
+                :append-inner-icon="
+                  isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+                "
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 label="Пароль"
                 required
-                type="text"
+                :type="isPasswordVisible ? 'text' : 'password'"
               />
             </VCol>
 

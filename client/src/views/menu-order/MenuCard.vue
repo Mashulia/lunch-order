@@ -11,6 +11,8 @@ interface Dish {
   priceLargePortion: number | null;
   priceSmallPortion: number | null;
   ingredient: Ingredient[];
+  smallPortionQty: number | null;
+  bigPortionQty: number | null;
 }
 
 interface Props {
@@ -29,8 +31,12 @@ const emits = defineEmits<{
   ): void;
 }>();
 
-const smallPortionQty = ref(0);
-const bigPortionQty = ref(0);
+const smallPortionQty = computed(() =>
+  props.dish.smallPortionQty ? props.dish.smallPortionQty : 0
+);
+const bigPortionQty = computed(() =>
+  props.dish.bigPortionQty ? props.dish.bigPortionQty : 0
+);
 
 const totalPrice = computed<number>(() => {
   const totalPriceBigPortion = props.dish.priceLargePortion

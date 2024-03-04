@@ -160,11 +160,11 @@ export class OrderService {
         : '';
       if (smallDish) {
         dishes.push(smallDish);
-        summary += Number(order.dish.priceSmallPortion);
+        summary += Number(order.dish.priceSmallPortion) * order.smallPortionQty;
       }
       if (bigDish) {
         dishes.push(bigDish);
-        summary += Number(order.dish.priceLargePortion);
+        summary += Number(order.dish.priceLargePortion) * order.largePortionQty;
       }
     });
 

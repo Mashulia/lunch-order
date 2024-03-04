@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { createSupplier, getAllSuppliers } from '@/api/supplier.api';
-import { saveMenu } from './controllers';
+import { saveMenu, uploadedFile, currentSupplier, isError, newSupplier, role, suppliers } from './controllers';
 
-const suppliers = ref([])
-const currentSupplier = ref<string>('')
-const role = 'manager'
-const newSupplier = ref('')
-const isError = ref(false)
-const uploadedFile = ref()
 
 const selectData = computed(() => suppliers.value.map((supplier) => {
   return supplier.name

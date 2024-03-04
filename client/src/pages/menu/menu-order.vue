@@ -59,13 +59,13 @@ const makeOrder = (
       isOrderCreateSuccessfully.value = true;
       setTimeout(() => {
         isOrderCreateSuccessfully.value = false;
-      }, 5000);
+      }, 1000);
     })
     .catch((err) => {
       isOrderCreateFailed.value = true;
       setTimeout(() => {
         isOrderCreateFailed.value = false;
-      }, 5000);
+      }, 1000);
     });
 };
 
@@ -86,6 +86,22 @@ onMounted(() => {
       <MenuRemainder :dotation="dotation" />
     </VCol>
   </VRow>
+  <v-alert
+    class="p-absolute"
+    v-if="isOrderCreateSuccessfully"
+    color="success"
+    icon="$success"
+    closable
+    text="Заказ был успешно создан"
+  ></v-alert>
+  <v-alert
+    class="p-absolute"
+    v-if="isOrderCreateFailed"
+    color="error"
+    icon="$error"
+    closable
+    text="Ошибка создания заказа"
+  ></v-alert>
   <VCheckbox
     v-model="user.isShowOnlyVegetarian"
     class="ma-3 pa-2 mt-0 pt-0"
@@ -168,21 +184,5 @@ onMounted(() => {
       </VContainer>
       <h3 v-else class="mt-15 mt-15 d-flex justify-center">No Dishes</h3>
     </VWindowItem>
-    <v-alert
-      class="p-absolute"
-      v-if="isOrderCreateSuccessfully"
-      color="success"
-      icon="$success"
-      closable
-      text="Заказ был успешно создан"
-    ></v-alert>
-    <v-alert
-      class="p-absolute"
-      v-if="isOrderCreateFailed"
-      color="error"
-      icon="$error"
-      closable
-      text="Ошибка создания заказа"
-    ></v-alert>
   </VWindow>
 </template>

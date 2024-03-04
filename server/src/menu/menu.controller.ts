@@ -9,6 +9,7 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MenuService } from './menu.service';
@@ -21,6 +22,9 @@ import {
 } from '@nestjs/swagger';
 import { Menu } from './models/menu.model';
 import { FileUploadDto } from './dto/file-upload.dto';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { UserRole } from 'src/roles/roles.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @ApiTags('Меню')
 @Controller('menu')
@@ -34,8 +38,8 @@ export class MenuController {
     type: FileUploadDto,
   })
   @ApiResponse({ status: 201, description: 'Success' })
-  //   @Roles(UserRole.MANAGER)
-  //   @UseGuards(RolesGuard)
+  @Roles(UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Post('upload-excel')
   @UseInterceptors(FileInterceptor('file'))
@@ -60,9 +64,12 @@ export class MenuController {
   @Get()
   @ApiOperation({ summary: 'Получение меню' })
   @ApiResponse({ status: 200, type: [Menu] })
-  async getMenuForOrder(): Promise<any> {
+  async getMenuForOrder(@Query('userId') userId: number): Promise<any> {
     try {
-      const menu = await this.menuService.getCurrentMenuWithIngredients();
+      const menu =
+        await this.menuService.getCurrentMenuWithIngredientsAndOrderedPortions(
+          userId,
+        );
       return { success: true, menu };
     } catch (error) {
       return { success: false, error: error.message };

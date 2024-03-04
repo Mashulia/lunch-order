@@ -26,7 +26,7 @@ const handleDay = (val: string) => {
     <MenuBtnGroup :activeDay="activeDay" class="mb-10" @toggleDay="handleDay" />
     <!-- <div> -->
     <VDataTable
-      style="overflow-y: auto; overflow-x: auto; max-height: 400px"
+      :height="400"
       :headers="headers"
       :items="activeDayMenu"
       :group-by="groupBy"
