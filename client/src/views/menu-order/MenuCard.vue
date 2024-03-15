@@ -31,12 +31,8 @@ const emits = defineEmits<{
   ): void;
 }>();
 
-const smallPortionQty = computed(() =>
-  props.dish.smallPortionQty ? props.dish.smallPortionQty : 0
-);
-const bigPortionQty = computed(() =>
-  props.dish.bigPortionQty ? props.dish.bigPortionQty : 0
-);
+const smallPortionQty = ref();
+const bigPortionQty = ref();
 
 const totalPrice = computed<number>(() => {
   const totalPriceBigPortion = props.dish.priceLargePortion
@@ -68,6 +64,16 @@ const makeOrder = (dish: Dish) => {
 };
 
 const show = ref(false);
+
+onMounted(() => {
+  smallPortionQty.value = props.dish.smallPortionQty
+    ? props.dish.smallPortionQty
+    : 0;
+
+  bigPortionQty.value = props.dish.priceSmallPortion
+    ? smallPortionQty.value * props.dish.priceSmallPortion
+    : 0;
+});
 </script>
 
 <template>

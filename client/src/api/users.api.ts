@@ -33,7 +33,6 @@ export const deleteUser = async (userId: number) => {
 };
 
 export const updateUser = async (userId: number, userData: any) => {
-  console.log(userData);
   try {
     const response = await axiosInstance.patch(`/users/${userId}`, userData);
     return response.data;

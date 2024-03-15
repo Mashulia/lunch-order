@@ -1,3 +1,5 @@
+import avatar1 from "@images/avatars/avatar-1.png";
+import avatar2 from "@images/avatars/vinni-pukh.png";
 interface User {
   id: number;
   avatarPhotoUrl: null | string;
@@ -161,3 +163,5 @@ export const vegetarianKeywords = [
 ];
 
 export const currentMenu = ref({});
+
+export const mainAvatar = ref(avatar1);

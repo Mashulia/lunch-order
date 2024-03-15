@@ -65,10 +65,30 @@ export const correctTableTitles = async () => {
       sortable: false,
       key: "title",
     },
-    { title: "Кол. М", key: "smallPortionQty", sortable: false },
-    { title: "Кол. Б", key: "largePortionQty", sortable: false },
-    { title: "Цена М", key: "priceSmallPortion", sortable: false },
-    { title: "Цена Б", key: "priceLargePortion", sortable: false },
+    {
+      title: "Кол. М",
+      key: "smallPortionQty",
+      align: "start",
+      sortable: false,
+    },
+    {
+      title: "Кол. Б",
+      key: "largePortionQty",
+      align: "start",
+      sortable: false,
+    },
+    {
+      title: "Цена М",
+      key: "priceSmallPortion",
+      align: "start",
+      sortable: false,
+    },
+    {
+      title: "Цена Б",
+      key: "priceLargePortion",
+      align: "start",
+      sortable: false,
+    },
   ];
   const users = await getAllUsers();
   const userKeys = {};
@@ -80,9 +100,20 @@ export const correctTableTitles = async () => {
         title: userName,
         key: userName,
         sortable: false,
+        align: "start",
         children: [
-          { title: "Кол. М", value: "smallPortionQty" },
-          { title: "Кол. Б", value: "bigPortionQty" },
+          {
+            title: "Кол. М",
+            key: "smallPortionQty",
+            align: "start",
+            sortable: false,
+          },
+          {
+            title: "Кол. Б",
+            key: "bigPortionQty",
+            align: "start",
+            sortable: false,
+          },
         ],
       });
       userKeys[userKey] = true;
@@ -95,7 +126,5 @@ export const getCommonMenu = async () => {
   loadingTable.value = true;
   orders.value = await getAllOrders();
   transformOrdersToMenuByDays();
-  headers.value = await correctTableTitles();
   loadingTable.value = false;
-  console.log(headers.value);
 };

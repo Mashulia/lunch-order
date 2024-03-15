@@ -61,7 +61,7 @@ const linkToReviewPage =
             </div>
             <div class="text-h6">
               Цена:
-              {{ menu.priceBigPortion * menu.qtyBig }} руб.
+              {{ Number(menu.priceBigPortion) * menu.qtyBig }} руб.
             </div>
           </div>
           <VBtn
@@ -82,7 +82,7 @@ const linkToReviewPage =
             </div>
             <div class="text-h6">
               Цена:
-              {{ menu.priceSmallPortion * menu.qtySmall }} руб.
+              {{ Number(menu.priceSmallPortion) * menu.qtySmall }} руб.
             </div>
           </div>
           <VBtn

@@ -25,11 +25,12 @@ const activeDay = ref("Пн");
 
 const activeDayMenu = computed(() => menuByDays.value[activeDay.value]);
 
+const choosedSum = ref(0);
+
 const handleDay = (val: string) => {
+  choosedSum.value = 0;
   activeDay.value = val;
 };
-
-const choosedSum = ref(0);
 
 const dotation = computed(() => {
   const settledDotation = 240;
@@ -43,7 +44,7 @@ const makeOrder = (
   smallPortionQty?: number,
   bigPortionQty?: number
 ) => {
-  choosedSum.value = val;
+  choosedSum.value += val;
   const currentOrderDate = currentMenu.value.menu[0].menuItems.find(
     (menuItem) => WeekDay[menuItem.dayOfWeek] === activeDay.value
   ).date;
@@ -57,6 +58,7 @@ const makeOrder = (
   createOrder(orderData)
     .then(() => {
       isOrderCreateSuccessfully.value = true;
+
       setTimeout(() => {
         isOrderCreateSuccessfully.value = false;
       }, 1000);
@@ -87,7 +89,7 @@ onMounted(() => {
     </VCol>
   </VRow>
   <v-alert
-    class="p-absolute"
+    class="p-absolute left--1"
     v-if="isOrderCreateSuccessfully"
     color="success"
     icon="$success"
@@ -95,7 +97,7 @@ onMounted(() => {
     text="Заказ был успешно создан"
   ></v-alert>
   <v-alert
-    class="p-absolute"
+    class="p-absolute left--1"
     v-if="isOrderCreateFailed"
     color="error"
     icon="$error"

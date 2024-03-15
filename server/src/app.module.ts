@@ -20,8 +20,11 @@ import { OrderModule } from './order/order.module';
 import { EmailModule } from './email/email.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { AppUpdate } from './app.update';
+import { SummaryModule } from './summary/summary.module';
 import * as LocalSession from 'telegraf-session-local';
+import { ServeStaticModule } from '@nestjs/serve-static';
 const sessions = new LocalSession({ database: 'session_db.json' });
+import { join } from 'path';
 @Module({
   imports: [
     TelegrafModule.forRoot({
@@ -30,6 +33,10 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     }),
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'src', 'avatars'), // Путь к вашей папке с аватарами
+      serveRoot: '/avatars', // URL-префикс для доступа к статическим файлам
     }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
@@ -60,7 +67,9 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     SuppliersModule,
     OrderModule,
     EmailModule,
+    SummaryModule,
   ],
   providers: [AppUpdate],
+  controllers: [],
 })
 export class AppModule {}

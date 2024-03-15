@@ -112,7 +112,7 @@ onMounted(() => {
               <VCard>
                 <VCardText>
                   <div
-                    v-if="isError"
+                    v-if="!isError"
                     class="text-h2 pa-12 text-center"
                   >
                     <VIcon

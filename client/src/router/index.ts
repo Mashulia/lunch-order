@@ -24,10 +24,10 @@ const router = createRouter({
           path: "summary",
           component: () => import("../pages/summary.vue"),
         },
-        {
-          path: "create-newsletter",
-          component: () => import("../pages/create-newsletter.vue"),
-        },
+        // {
+        //   path: "create-newsletter",
+        //   component: () => import("../pages/create-newsletter.vue"),
+        // },
         {
           path: "send-menu",
           component: () => import("../pages/send-menu/send-menu.vue"),

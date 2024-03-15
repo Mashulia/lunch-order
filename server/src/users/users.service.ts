@@ -11,6 +11,8 @@ import { RolesService } from 'src/roles/roles.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import { UserRole } from 'src/roles/roles.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -74,18 +76,37 @@ export class UsersService {
     );
   }
 
-  async updateUser(
-    id: number,
-    updateUserDto: Partial<UpdateUserDto>,
-  ): Promise<User> {
+  async updateUser(id: number, updateUserDto: Partial<UpdateUserDto>) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new Error('User not found');
     }
+
+    const directory = path.join(__dirname, '..', 'avatars');
+
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory, { recursive: true });
+    }
+
+    // Проверяем, что updateUserDto содержит avatarPhotoUrl
+    if (updateUserDto.avatarPhotoUrl) {
+      // Преобразуем строку base64 в бинарные данные
+      const base64Image = updateUserDto.avatarPhotoUrl.split(';base64,').pop();
+      const imageName = `avatar_${Date.now()}.jpeg`; // Примерное имя файла
+      const imagePath = path.join(__dirname, '..', 'avatars', imageName); // Путь к файлу
+      // Сохраняем бинарные данные в файл
+      fs.writeFileSync(imagePath, base64Image, { encoding: 'base64' });
+
+      // Обновляем свойство avatarPhotoUrl пользователя
+      user.avatarPhotoUrl = `/avatars/${imageName}`; // Предполагается, что вы храните путь к файлу
+
+      // Удаляем свойство из updateUserDto, чтобы оно не перезаписало user.avatarPhotoUrl
+      delete updateUserDto.avatarPhotoUrl;
+    }
+
     for (const field in updateUserDto) {
       user[field] = updateUserDto[field];
     }
     await user.save();
-    return user;
   }
 }

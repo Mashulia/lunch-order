@@ -96,6 +96,9 @@ onMounted(() => {
             @deleteEmployee="deleteEmployee"
           />
         </VBtn>
+        <VBtn color="primary" variant="tonal" @click="dialog = !dialog">
+          Отмена
+        </VBtn>
       </VCol>
     </VRow>
   </div>

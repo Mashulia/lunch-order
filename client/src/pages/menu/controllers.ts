@@ -14,7 +14,7 @@ import {
 export const isOrderCreateSuccessfully = ref(false);
 export const isOrderCreateFailed = ref(false);
 export const uploadedFile = ref();
-export const currentSupplier = ref<string>("");
+export const currentSupplier = ref();
 export const suppliers = ref([]);
 export const role = "manager";
 export const newSupplier = ref("");
@@ -26,7 +26,7 @@ export const saveMenu = async () => {
     formData.append("file", file);
   });
 
-  uploadMenu(formData, currentSupplier.value).catch((error) => {
+  uploadMenu(formData, suppliers.value[0].id).catch((error) => {
     console.error("Error saving menu:", error);
     isError.value = true;
   });

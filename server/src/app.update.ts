@@ -1,7 +1,18 @@
-import { Ctx, InjectBot, Message, On, Start, Update } from 'nestjs-telegraf';
+import {
+  Action,
+  Command,
+  Ctx,
+  Hears,
+  InjectBot,
+  Message,
+  On,
+  Start,
+  Update,
+} from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { UsersService } from './users/users.service';
 import { OrderService } from './order/order.service';
+import { actionButtons } from 'app.buttons';
 
 @Update()
 export class AppUpdate {
@@ -13,22 +24,30 @@ export class AppUpdate {
 
   @Start()
   async startCommand(ctx: Context) {
-    await ctx.reply('Привет! Введи имя и фамилию для получения заказа.');
+    await ctx.reply('Привет!');
+    await ctx.reply('Нажми кнопку для просмотра меню', actionButtons());
+  }
+
+  @Command('food')
+  async foodCommand(ctx: Context) {
+    console.log(ctx);
+    await ctx.reply('Введите вашу фамилию:');
+  }
+
+  @Hears('Еда')
+  async getFood(ctx: Context) {
+    await ctx.reply('Введите фамилию');
   }
 
   @On('text')
   async getMessage(@Message('text') message: string, @Ctx() ctx: Context) {
-    const lastName = message.split(' ')[1];
     const users = await this.userService.getAllUsers();
+    console.log(users);
     let userId = null;
     let isUserFound = false;
 
-    if (message.split(' ')[0].toLowerCase() === 'еда') {
-      return;
-    }
-
     users.forEach((user) => {
-      if (user.lastName.toLowerCase() === lastName.toLowerCase()) {
+      if (user.lastName.toLowerCase() === message.toLowerCase()) {
         isUserFound = true;
         userId = user.id;
       }

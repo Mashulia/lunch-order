@@ -93,5 +93,5 @@ export const deleteDish = (
 };
 
 export const redirectToMenuOrder = () => {
-  router.push("/");
+  router.push("/menu-order");
 };

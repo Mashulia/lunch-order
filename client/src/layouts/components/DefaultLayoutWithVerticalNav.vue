@@ -86,20 +86,16 @@ const vuetifyTheme = useTheme();
             to: '/send-menu',
           }"
         />
-        <VerticalNavLink
+        <!-- <VerticalNavLink
           :item="{
             title: 'Создать рассылку',
             icon: 'mdi-email',
             to: '/create-newsletter',
           }"
         />
-        <VerticalNavLink
-          :item="{
-            title: 'Сотрудники',
-            icon: 'mdi-account-group',
-            to: '/employees',
-          }"
-        />
+        <VerticalNavLink -->
+        <!-- :item="{ title: 'Сотрудники', icon: 'mdi-account-group', to:
+        '/employees', }" /> -->
       </template>
     </template>
 

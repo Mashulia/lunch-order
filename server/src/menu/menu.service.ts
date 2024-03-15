@@ -246,7 +246,6 @@ export class MenuService {
       }
       // Получаем заказы пользователя
       const userOrders = await this.orderServise.getAllOrdersByUserId(userId);
-      console.log(userOrders);
       // Проходимся по каждому блюду в текущем меню
       for (const menu of currentMenus) {
         for (const menuItem of menu.menuItems) {

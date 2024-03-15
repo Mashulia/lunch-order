@@ -1,14 +1,9 @@
 <script lang="ts" setup>
-const staff = [
-  {
-    name: 'Руднева М.С.',
-    menuOrder: [231, 244, 211, 0, 239],
-    totalValue: 1500,
-  },
-]
+import { getSummary } from '@/api/summary.api';
+import { isManager } from '@/commonState/store';
+const staff = ref(null)
 
-const subsidySize = 240
-const role = 'manager'
+const subsidySize = ref(240)
 
 const numberRule = val => {
   if (val < 0)
@@ -18,8 +13,19 @@ const numberRule = val => {
 }
 
 const calcRemainSubsidy = (sum: number) => {
-  return subsidySize * 5 - sum
+  return subsidySize.value * 5 - sum
 }
+onMounted(() => {
+  getSummary().then((data) => {
+    if (data) {
+      data.forEach((user) => {
+        user.menuOrder.shift()
+      })
+    staff.value = data
+    }
+  })
+})
+
 </script>
 
 <template>
@@ -64,10 +70,10 @@ const calcRemainSubsidy = (sum: number) => {
       <tbody>
         <tr
           v-for="item in staff"
-          :key="item.name"
+          :key="item"
         >
           <td>
-            {{ item.name }}
+            {{ item.user }}
           </td>
           <td
             v-for="(sum, i) in item.menuOrder"
@@ -77,22 +83,22 @@ const calcRemainSubsidy = (sum: number) => {
             {{ sum }}
           </td>
           <td class="text-center">
-            {{ item.totalValue }}
+            {{ item.total ?? 0 }}
           </td>
           <td class="text-center">
             {{ subsidySize }}
           </td>
           <td
             class="text-center"
-            :class="calcRemainSubsidy(item.totalValue) >= 0 ? 'bg-primary' : 'bg-error'"
+            :class="calcRemainSubsidy(item.total) >= 0 ? 'bg-primary' : 'bg-error'"
           >
-            {{ calcRemainSubsidy(item.totalValue) }}
+            {{ calcRemainSubsidy(item.total) }}
           </td>
         </tr>
       </tbody>
     </VTable>
     <div
-      v-if="role === 'manager'"
+      v-if="isManager === 'manager'"
       class="d-flex mt-auto align-center ml-auto"
     >
       <VTextField

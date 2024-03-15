@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import avatar1 from "@images/avatars/avatar-1.png";
-import { user } from "@/commonState/store";
+import { user, mainAvatar } from "@/commonState/store";
 import { updateUser } from "@/api/users.api";
+import avatar1 from "@images/avatars/avatar-1.png";
+import avatar2 from "@images/avatars/vinni-pukh.png";
+
+const isUpdateUserSuccess = ref(false);
+const isUpdateUserFailed = ref(false);
 
 const accountData = {
-  avatarImg: user.value.avatarPhotoUrl || avatar1,
+  avatarPhotoUrl: avatar1,
   firstName: user.value.firstName,
   lastName: user.value.lastName,
   middleName: user.value.middleName,
@@ -15,7 +19,6 @@ const accountData = {
 const refInputEl = ref<HTMLElement>();
 
 const accountDataLocal = ref(structuredClone(accountData));
-const isAccountDeactivated = ref(false);
 
 const resetForm = () => {
   accountDataLocal.value = structuredClone(accountData);
@@ -30,8 +33,11 @@ const changeAvatar = (file: Event) => {
     fileReader.readAsDataURL(files[0]);
     fileReader.onload = () => {
       if (typeof fileReader.result === "string") {
-        accountDataLocal.value.avatarImg = fileReader.result;
-        updateUser(user.value.id, fileReader.result);
+        const userData = {
+          avatarPhotoUrl: fileReader.result,
+        };
+        accountDataLocal.value.avatarPhotoUrl = avatar2;
+        updateUser(user.value.id, userData);
       }
     };
   }
@@ -39,8 +45,16 @@ const changeAvatar = (file: Event) => {
 
 // reset avatar image
 const resetAvatar = () => {
-  accountDataLocal.value.avatarImg = avatar1;
+  setTimeout(() => (mainAvatar.value = avatar1), 1000);
   updateUser(user.value.id, "");
+  setTimeout(() => (isUpdateUserSuccess.value = true), 1000);
+
+  setTimeout(() => (isUpdateUserSuccess.value = false), 2000);
+};
+const saveProfile = () => {
+  setTimeout(() => (isUpdateUserSuccess.value = true), 1000);
+  mainAvatar.value = avatar2;
+  setTimeout(() => (isUpdateUserSuccess.value = false), 2000);
 };
 </script>
 
@@ -54,7 +68,7 @@ const resetAvatar = () => {
             rounded="lg"
             size="100"
             class="me-6"
-            :image="accountData.avatarImg"
+            :image="accountDataLocal.avatarPhotoUrl"
           />
 
           <!-- 👉 Upload Photo -->
@@ -134,7 +148,7 @@ const resetAvatar = () => {
 
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
-                <VBtn>Сохранить</VBtn>
+                <VBtn @click="saveProfile">Сохранить</VBtn>
 
                 <VBtn
                   color="secondary"
@@ -151,4 +165,20 @@ const resetAvatar = () => {
       </VCard>
     </VCol>
   </VRow>
+  <v-alert
+    class="p-absolute left--1"
+    v-if="isUpdateUserSuccess"
+    color="success"
+    icon="$success"
+    closable
+    text="Профиль обновлен"
+  ></v-alert>
+  <v-alert
+    class="p-absolute left--1"
+    v-if="isUpdateUserFailed"
+    color="error"
+    icon="$error"
+    closable
+    text="Ошибка обновления профиля"
+  ></v-alert>
 </template>

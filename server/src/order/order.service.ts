@@ -83,7 +83,6 @@ export class OrderService {
   }
 
   async deleteOrder(id: number, data: any): Promise<Order[]> {
-    console.log(id, data);
     await this.orderRepository.destroy({ where: { dishId: data.dishId } });
 
     // Обновленный список заказов после удаления текущего заказа

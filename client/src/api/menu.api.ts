@@ -1,11 +1,16 @@
-import { user } from "@/commonState/store";
+import { token, user } from "@/commonState/store";
 import { axiosInstance } from "./config";
 
-export const uploadMenu = async (formData, supplierName) => {
+export const uploadMenu = async (formData, supplierId) => {
   try {
     const response = await axiosInstance.post(
-      `/upload-excel?supplierName=${supplierName}`,
-      formData
+      `menu/upload-excel?supplierId=${supplierId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      }
     );
     if (response.status === 201) {
       console.log("Меню успешно загружено");

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ProviderMenuTable from "@/views/pages/send-menu/ProviderMenuTable.vue";
-import { correctTableTitles, getCommonMenu } from "./controllers";
+import { getCommonMenu } from "./controllers";
 
 const route = useRoute();
 
@@ -13,7 +13,6 @@ const tabs = [
 
 onMounted(() => {
   getCommonMenu();
-  correctTableTitles();
 });
 </script>
 

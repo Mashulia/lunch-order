@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import avatar1 from "@images/avatars/avatar-1.png";
 import { logout } from "@/pages/register/controllers";
-import { token } from "@/commonState/store";
+import { mainAvatar, token } from "@/commonState/store";
 import { user } from "@/commonState/store";
 </script>
 
@@ -15,7 +14,7 @@ import { user } from "@/commonState/store";
     bordered
   >
     <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-      <VImg :src="user.avatarPhotoUrl || avatar1" />
+      <VImg :src="mainAvatar" />
 
       <!-- SECTION Menu -->
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
@@ -32,7 +31,7 @@ import { user } from "@/commonState/store";
                   color="success"
                 >
                   <VAvatar color="primary" variant="tonal">
-                    <VImg :src="user.avatarPhotoUrl || avatar1" />
+                    <VImg :src="mainAvatar" />
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
